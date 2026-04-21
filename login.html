@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Bebek Segar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #fdf6e3;
+            --orange: #ff9f43;
+            --navy: #2c3e50;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; }
+
+        /* Memaksa layout selalu bersebelahan (row) */
+        body { display: flex; flex-direction: row; min-height: 100vh; background-color: var(--cream); overflow-x: hidden; position: relative; }
+
+        /* --- Kiri: Area Form --- */
+        .left-side {
+            flex: 1; display: flex; justify-content: center; align-items: center; padding: 40px; position: relative; z-index: 10;
+        }
+
+        .form-container {
+            background: #ffffff; padding: 40px 30px; border-radius: 24px; width: 100%; max-width: 420px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+        }
+
+        .header-logo { font-size: 50px; text-align: center; margin-bottom: 10px; }
+        .form-container h2 { color: var(--navy); text-align: center; font-size: 26px; margin-bottom: 8px; }
+        .form-container p { color: #7f8c8d; text-align: center; font-size: 15px; margin-bottom: 30px; }
+
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; color: var(--navy); font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+        .input-group input {
+            width: 100%; padding: 14px 18px; border-radius: 12px; border: 2px solid #e1e8ed;
+            font-size: 15px; outline: none; transition: 0.3s; background-color: #f8f9fa;
+        }
+        .input-group input:focus { border-color: var(--orange); background-color: #fff; }
+
+        .btn-submit {
+            width: 100%; padding: 15px; background-color: var(--orange); color: white;
+            border: none; border-radius: 12px; font-size: 16px; font-weight: 700;
+            cursor: pointer; transition: 0.3s; margin-top: 10px;
+        }
+        .btn-submit:hover { background-color: #f38f31; transform: translateY(-2px); box-shadow: 0 8px 15px rgba(255, 159, 67, 0.3); }
+
+        .footer-link { text-align: center; margin-top: 25px; font-size: 14px; color: var(--navy); font-weight: 600; }
+        .footer-link a { color: var(--orange); text-decoration: none; font-weight: 700; }
+
+        /* --- Kanan: Area Gambar Bebek --- */
+        .right-side {
+            flex: 1; background-color: var(--navy); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; padding: 40px; position: relative; overflow: hidden;
+        }
+
+        .right-side::before {
+            content: ''; position: absolute; width: 600px; height: 600px;
+            background: rgba(255, 159, 67, 0.05); border-radius: 50%; top: -100px; right: -100px;
+        }
+
+        .promo-content { text-align: center; color: white; z-index: 5; max-width: 420px; }
+        
+        .main-image-container {
+            font-size: 100px; margin-bottom: 20px; animation: bounce 3s infinite ease-in-out;
+            background: rgba(255,255,255,0.1); width: 200px; height: 200px; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center; margin: 0 auto 30px;
+            border: 4px dashed var(--orange);
+        }
+
+        .promo-content h3 { font-size: 32px; color: var(--orange); margin-bottom: 15px; line-height: 1.3; }
+        .promo-content p { font-size: 16px; line-height: 1.6; color: #d1d8e0; }
+
+        /* Animasi Dekorasi Melayang */
+        .floating-deco { position: absolute; opacity: 0.7; animation: floatAround 6s infinite ease-in-out; z-index: 1; }
+        .deco-1 { top: 15%; left: 15%; animation-delay: 0s; font-size: 60px; }
+        .deco-2 { top: 20%; right: 15%; animation-delay: 1.5s; font-size: 50px; }
+        .deco-3 { bottom: 15%; left: 20%; animation-delay: 2.5s; font-size: 55px; }
+        .deco-4 { bottom: 25%; right: 20%; animation-delay: 0.5s; font-size: 45px; }
+
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        @keyframes floatAround { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-25px) rotate(15deg); } }
+
+        /* =========================================
+           TAMBAHAN CSS UNTUK LOADING SCREEN SUCCESS
+           ========================================= */
+        #success-loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--cream);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999; /* Selalu di paling atas */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        /* Class untuk memunculkan loading screen */
+        #success-loading-screen.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loading-logo {
+            width: 150px;
+            height: auto;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            animation: pulseLucu 1.5s infinite ease-in-out;
+        }
+
+        .success-title {
+            color: var(--orange);
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .success-text {
+            color: var(--navy);
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .dots::after {
+            content: '';
+            animation: loadingDots 1.5s infinite;
+        }
+
+        @keyframes pulseLucu {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.85; }
+        }
+
+        @keyframes loadingDots {
+            0% { content: '.'; }
+            33% { content: '..'; }
+            66% { content: '...'; }
+            100% { content: ''; }
+        }
+
+        /* Penyesuaian khusus layar HP agar tetap bersebelahan tapi ukurannya mengecil */
+        @media (max-width: 768px) {
+            .left-side, .right-side { padding: 10px; }
+            .form-container { padding: 20px 15px; }
+            .header-logo { font-size: 30px; }
+            .form-container h2 { font-size: 18px; }
+            .form-container p { font-size: 12px; margin-bottom: 15px; }
+            .input-group label { font-size: 12px; }
+            .input-group input { padding: 10px; font-size: 13px; }
+            .btn-submit { padding: 10px; font-size: 14px; }
+            .footer-link { font-size: 12px; }
+            
+            .promo-content h3 { font-size: 16px; }
+            .promo-content p { font-size: 11px; }
+            .main-image-container { font-size: 50px; width: 100px; height: 100px; border-width: 2px; margin-bottom: 15px;}
+            .floating-deco { font-size: 25px !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="left-side">
+        <div class="form-container">
+            <div class="header-logo">🦆</div>
+            <h2>Selamat Datang!</h2>
+            <p>Silakan masuk ke akunmu</p>
+
+            <form id="loginForm" action="#">
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="username" placeholder="Username" required>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-submit">Login</button>
+            </form>
+
+            <div class="footer-link">
+                Belum punya akun? <br> <a href="register.html">Daftar di sini</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="right-side">
+        <div class="floating-deco deco-1">🐥</div>
+        <div class="floating-deco deco-2">🍗</div>
+        <div class="floating-deco deco-3">🦆</div>
+        <div class="floating-deco deco-4">🍖</div>
+
+        <div class="promo-content">
+            <div class="main-image-container">
+                🦆🍗
+            </div>
+            <h3>Bebek Potong Segar!</h3>
+            <p>Daging super empuk, potong setiap hari, dan higienis.</p>
+        </div>
+    </div>
+
+    <div id="success-loading-screen">
+        <img src="logo.png" alt="Logo" class="loading-logo">
+        <h2 class="success-title" id="welcome-message">Login Berhasil!</h2>
+        <p class="success-text">Membawa kamu ke halaman utama<span class="dots"></span></p>
+    </div>
+
+    <script>
+        // Tangkap elemen form dan layar loading
+        const loginForm = document.getElementById('loginForm');
+        const loadingScreen = document.getElementById('success-loading-screen');
+        const welcomeMessage = document.getElementById('welcome-message');
+        const usernameInput = document.getElementById('username');
+
+        // Saat form di-submit (tombol login diklik)
+        loginForm.addEventListener('submit', function(event) {
+            event.preventDefault(); 
+
+            const namaUser = usernameInput.value;
+            welcomeMessage.innerText = "Halo, " + namaUser + "!";
+
+            // TAMBAHAN BARU: Simpan nama user ke memori browser
+            localStorage.setItem('usernameAktif', namaUser);
+
+            loadingScreen.classList.add('active');
+
+            setTimeout(function() {
+                // UBAH TUJUAN KE HALAMAN WELCOME
+                window.location.href = 'welcome.html'; 
+            }, 3000); 
+        });
+    </script>
+
+</body>
+</html>

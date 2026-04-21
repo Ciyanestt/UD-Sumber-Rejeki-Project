@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading - UD. Sumber Rejeki</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #fdf6e3;
+            --navy: #2c3e50;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--cream); /* Latar belakang warna krem */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Quicksand', sans-serif;
+            overflow: hidden;
+            transition: opacity 0.5s ease-out; /* Untuk efek transisi saat pindah halaman */
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .loader-logo {
+            width: 200px; /* Ukuran logomu */
+            height: auto;
+            margin-bottom: 25px;
+            border-radius: 50%; /* Membuat gambar logo jadi lingkaran rapi */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            animation: pulseLucu 2s infinite ease-in-out; /* Animasi berdenyut */
+        }
+
+        .loader-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--navy);
+            letter-spacing: 1px;
+        }
+
+        /* Titik-titik loading yang bergerak */
+        .dots::after {
+            content: '';
+            animation: loadingDots 1.5s infinite;
+        }
+
+        /* --- Animasi --- */
+        @keyframes pulseLucu {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.85; }
+        }
+
+        @keyframes loadingDots {
+            0% { content: '.'; }
+            33% { content: '..'; }
+            66% { content: '...'; }
+            100% { content: ''; }
+        }
+
+        /* Class untuk efek fade out sebelum ganti halaman */
+        .fade-out {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="loader-content">
+        <img src="logo.png" alt="Logo UD Sumber Rejeki" class="loader-logo">
+        <div class="loader-text">Menyiapkan Halaman<span class="dots"></span></div>
+    </div>
+
+    <script>
+        // Jalankan script saat halaman selesai dimuat
+        window.addEventListener('load', function() {
+            
+            // Atur waktu tayang loading screen (3000 = 3 detik)
+            setTimeout(function() {
+                
+                // 1. Buat layar memudar (fade out)
+                document.body.classList.add('fade-out');
+                
+                // 2. Tunggu layar memudar selesai (0.5 detik), lalu pindah ke login.html
+                setTimeout(function() {
+                    window.location.href = 'login.html';
+                }, 500);
+
+            }, 3000); 
+        });
+    </script>
+
+</body>
+</html>
