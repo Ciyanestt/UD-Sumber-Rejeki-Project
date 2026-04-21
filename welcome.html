@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selamat Datang - Bebek Segar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #fdf6e3;
+            --orange: #ff9f43;
+            --navy: #2c3e50;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; }
+
+        body {
+            background-color: var(--cream);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--navy);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Latar belakang dekorasi */
+        body::before {
+            content: ''; position: absolute; width: 600px; height: 600px;
+            background: rgba(255, 159, 67, 0.05); border-radius: 50%; top: -150px; left: -150px; z-index: 0;
+        }
+
+        .welcome-card {
+            background: #ffffff;
+            padding: 50px 40px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 650px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            text-align: center;
+            position: relative;
+            z-index: 10;
+            animation: slideUp 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .logo-img {
+            width: 120px;
+            height: auto;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        }
+
+        .greeting {
+            font-size: 32px;
+            color: var(--orange);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .description {
+            font-size: 16px;
+            color: #7f8c8d;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            padding: 0 20px;
+        }
+
+        /* Grid Fitur */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .feature-item {
+            background-color: #f8f9fa;
+            padding: 20px 15px;
+            border-radius: 16px;
+            border: 2px solid #e1e8ed;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--orange);
+        }
+
+        .feature-icon {
+            font-size: 35px;
+            margin-bottom: 10px;
+        }
+
+        .feature-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .btn-masuk {
+            display: inline-block;
+            padding: 16px 40px;
+            background-color: var(--orange);
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 700;
+            transition: 0.3s;
+            box-shadow: 0 8px 15px rgba(255, 159, 67, 0.3);
+        }
+
+        .btn-masuk:hover {
+            background-color: #f38f31;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px rgba(255, 159, 67, 0.4);
+        }
+
+        @keyframes slideUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsif untuk HP */
+        @media (max-width: 600px) {
+            .welcome-card { padding: 30px 20px; }
+            .greeting { font-size: 24px; }
+            .description { font-size: 14px; padding: 0; }
+            .features-grid { grid-template-columns: 1fr; gap: 10px; }
+            .feature-item { display: flex; align-items: center; padding: 15px; text-align: left; }
+            .feature-icon { margin-bottom: 0; margin-right: 15px; font-size: 30px; }
+            .feature-title { font-size: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="welcome-card">
+        <img src="logo.png" alt="Logo UD Sumber Rejeki" class="logo-img">
+        
+        <h1 class="greeting">Selamat Datang, <span id="namaPengguna">Mitra</span>!</h1>
+        
+        <p class="description">
+            UD. Sumber Rejeki adalah platform penyedia bebek potong segar berkualitas. Kami hadir untuk memenuhi kebutuhan bisnis kuliner dan konsumsi harian Anda dengan standar kebersihan terbaik.
+        </p>
+
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon">🦆</div>
+                <div class="feature-title">Bebek Potong Segar Harian</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">⚖️</div>
+                <div class="feature-title">Timbangan Pas & Jujur</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🚚</div>
+                <div class="feature-title">Pengiriman Tepat Waktu</div>
+            </div>
+        </div>
+
+        <a href="home.html" class="btn-masuk">Mulai Belanja Sekarang ➔</a>
+    </div>
+
+    <script>
+        // Mengambil nama user yang disimpan dari halaman login
+        const namaAktif = localStorage.getItem('usernameAktif');
+        
+        // Jika namanya ada, ganti teks pada elemen 'namaPengguna'
+        if (namaAktif) {
+            document.getElementById('namaPengguna').innerText = namaAktif;
+        }
+    </script>
+
+</body>
+</html>
