@@ -15,7 +15,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Quicksand', sans-serif; }
 
         /* Memaksa layout selalu bersebelahan (row) */
-        body { display: flex; flex-direction: row; min-height: 100vh; background-color: var(--cream); overflow-x: hidden; }
+        body { display: flex; flex-direction: row; min-height: 100vh; background-color: var(--cream); overflow-x: hidden; position: relative; }
 
         /* --- Kiri: Area Gambar Bebek --- */
         .left-side-promo {
@@ -84,24 +84,46 @@
         .footer-link { text-align: center; margin-top: 20px; font-size: 14px; color: var(--navy); font-weight: 600; }
         .footer-link a { color: var(--orange); text-decoration: none; font-weight: 700; }
 
-        /* Penyesuaian khusus layar HP agar tetap bersebelahan tapi ukurannya mengecil */
+        /* --- CSS Notifikasi Custom (Toast) --- */
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            z-index: 9999;
+            transform: translateX(150%);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        .toast-notification.show { transform: translateX(0); }
+        .toast-success { background-color: #2ecc71; } 
+        .toast-error { background-color: #e74c3c; }   
+
+        /* Penyesuaian khusus layar HP */
         @media (max-width: 768px) {
             .left-side-promo, .right-side-form { padding: 10px; }
             .form-container { padding: 20px 15px; }
-            .form-grid { grid-template-columns: 1fr; gap: 8px; } /* Form di HP jadi 1 kolom ke bawah supaya tetap terbaca di ruang sempit */
+            .form-grid { grid-template-columns: 1fr; gap: 8px; } 
             .full-width { grid-column: span 1; }
-            
             .form-container h2 { font-size: 18px; }
             .form-container p { font-size: 11px; margin-bottom: 15px; }
             .input-group label { font-size: 11px; margin-bottom: 3px; }
             .input-group input { padding: 8px 10px; font-size: 12px; }
             .btn-submit { padding: 10px; font-size: 13px; margin-top: 10px; }
             .footer-link { font-size: 11px; margin-top: 10px; }
-
             .promo-content h3 { font-size: 16px; }
             .promo-content p { font-size: 11px; }
             .main-image-container { font-size: 40px; width: 80px; height: 80px; border-width: 2px; margin-bottom: 15px; }
-            .floating-deco { font-size: 20px !important; } /* Mengecilkan ukuran bebek melayang di HP */
+            .floating-deco { font-size: 20px !important; } 
+            .toast-notification { top: 10px; right: 10px; left: 10px; text-align: center; justify-content: center; }
         }
     </style>
 </head>
@@ -127,31 +149,31 @@
             <h2>Pendaftaran</h2>
             <p>Lengkapi data di bawah ini</p>
 
-            <form action="#">
+            <form id="formRegister" novalidate>
                 <div class="form-grid">
                     <div class="input-group">
                         <label>Nama Lengkap</label>
-                        <input type="text" placeholder="Nama Anda" required>
+                        <input type="text" id="regNama" placeholder="Nama Anda" required>
                     </div>
                     <div class="input-group">
                         <label>Username</label>
-                        <input type="text" placeholder="Pilih username" required>
+                        <input type="text" id="regUsername" placeholder="Pilih username" required>
                     </div>
                     <div class="input-group full-width">
                         <label>Email</label>
-                        <input type="email" placeholder="contoh@email.com" required>
+                        <input type="email" id="regEmail" placeholder="contoh@email.com" required>
                     </div>
                     <div class="input-group">
                         <label>Password</label>
-                        <input type="password" placeholder="Buat password" required>
+                        <input type="password" id="regPassword" placeholder="Buat password" required>
                     </div>
                     <div class="input-group">
                         <label>Nomor Telepon</label>
-                        <input type="tel" placeholder="08xxxxxxxxx" required>
+                        <input type="text" id="regTelepon" placeholder="08xxxxxxxxx" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                     </div>
                     <div class="input-group full-width">
                         <label>Alamat Lengkap</label>
-                        <input type="text" placeholder="Detail alamat" required>
+                        <input type="text" id="regAlamat" placeholder="Detail alamat" required>
                     </div>
                 </div>
                 
@@ -163,6 +185,79 @@
             </div>
         </div>
     </div>
+
+    <div id="toastNotification" class="toast-notification">
+        <span id="toastIcon"></span>
+        <span id="toastMessage"></span>
+    </div>
+
+    <script>
+        const formRegister = document.getElementById('formRegister');
+        const toast = document.getElementById('toastNotification');
+        const toastIcon = document.getElementById('toastIcon');
+        const toastMessage = document.getElementById('toastMessage');
+
+        // Fungsi menampilkan notifikasi
+        function showNotification(type, message) {
+            toast.classList.remove('toast-success', 'toast-error', 'show');
+            
+            if (type === 'success') {
+                toast.classList.add('toast-success');
+                toastIcon.innerText = '✅';
+            } else {
+                toast.classList.add('toast-error');
+                toastIcon.innerText = '❌';
+            }
+
+            toastMessage.innerText = message;
+            
+            // Sedikit delay agar animasi reset saat diklik berkali-kali
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 50);
+
+            // Hilang otomatis setelah 3 detik
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        formRegister.addEventListener('submit', function(event) {
+            event.preventDefault(); // Mencegah reload halaman
+
+            // Ambil nilai dari semua inputan
+            const nama = document.getElementById('regNama').value.trim();
+            const username = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+            const telepon = document.getElementById('regTelepon').value.trim();
+            const alamat = document.getElementById('regAlamat').value.trim();
+
+            // 1. Cek apakah ada inputan yang kosong
+            if (!nama || !username || !email || !password || !telepon || !alamat) {
+                showNotification('error', 'Gagal: Semua kolom wajib diisi!');
+                return;
+            }
+
+            // 2. Cek format email (harus ada @)
+            if (!email.includes('@')) {
+                showNotification('error', 'Gagal: Format email tidak valid!');
+                return;
+            }
+
+            // 3. Cek panjang password (misal minimal 6 karakter)
+            if (password.length < 6) {
+                showNotification('error', 'Gagal: Password minimal 6 karakter!');
+                return;
+            }
+
+            // Jika semua pengecekan di atas lolos, berarti pendaftaran berhasil!
+            showNotification('success', 'Pendaftaran Berhasil! Silakan login.');
+            
+            // Opsional: kosongkan form setelah berhasil
+            formRegister.reset();
+        });
+    </script>
 
 </body>
 </html>
