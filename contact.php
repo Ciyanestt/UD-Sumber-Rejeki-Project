@@ -70,6 +70,22 @@
             font-size: 14px;
         }
 
+                /* --- EFEK HOVER & ACTIVE (MEMBESAR & GARIS BAWAH) KECUALI TOMBOL LOGIN --- */
+        .navbar-nav .nav-link {
+            transition: all 0.3s ease-in-out;
+            display: inline-block; 
+        }
+
+        /* Menu akan membesar, berubah oranye, dan memiliki garis bawah saat aktif/di-hover */
+        .navbar-nav .nav-link:not(.btn-login).active,
+        .navbar-nav .nav-link:not(.btn-login):hover {
+            color: #333 !important; 
+            transform: scale(1.25); /* Teks tetap membesar */
+            text-decoration: underline; /* Menambahkan garis bawah */
+            text-underline-offset: 6px; /* Mengatur jarak antara teks dan garis bawah */
+            text-decoration-thickness: 2px; /* Mengatur ketebalan garis bawah */
+        }
+
         /* --- HERO SECTION (Bagian Atas Melengkung) --- */
         .hero-section {
             background-color: var(--primary-orange);
@@ -305,12 +321,12 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about us.php">About Us</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Product</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="#">Mitra</a></li>
+                    <li class="nav-item"><a class="nav-link" href="mitra.php">Mitra</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Pesan</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Contact Us</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">History</a></li>
+                    <li class="nav-item"><a class="nav-link" href="contact.php">Contact Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="history.php">History</a></li>
                     <li class="nav-item ms-lg-3"><a class="btn btn-login nav-link px-4" href="#">LOGIN</a></li>
                 </ul>
             </div>
