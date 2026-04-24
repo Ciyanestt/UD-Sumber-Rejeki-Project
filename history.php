@@ -205,7 +205,7 @@
                 <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="about us.php">About Us</a></li>
-                    <li class="nav-item"><a class="nav-link" href="percobaan.php">Product</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Product</a></li>
                     <li class="nav-item"><a class="nav-link" href="mitra.php">Mitra</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Pesan</a></li>
                     <li class="nav-item"><a class="nav-link" href="contact.php">Contact Us</a></li>
