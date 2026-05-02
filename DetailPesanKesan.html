@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Pesan & Kesan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #FAF0E6; 
+            --bg-app: #ffffff;
+            --oranye-tua: #FBAF3B; 
+            --oranye-muda: #FDE8C4;
+            --merah-tombol: #EF3E36;
+            --abu-footer: #D1D5DB;
+            --text-dark: #1F2937;
+        }
+
+        * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; }
+
+        body { background-color: var(--bg-body); display: flex; justify-content: center; min-height: 100vh; padding: 20px 10px; }
+
+        .app-container {
+            width: 100%; max-width: 1200px; 
+            background: var(--bg-app); border-radius: 20px; overflow: hidden;
+            display: flex; flex-direction: column; position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        /* HEADER BERGELOMBANG */
+        .header-wavy {
+            background-color: var(--oranye-tua);
+            padding: 40px 20px 60px; text-align: center;
+            border-bottom-left-radius: 50% 25px;
+            border-bottom-right-radius: 50% 25px;
+            position: relative; z-index: 2;
+        }
+        .header-wavy h1 { font-size: 18px; font-weight: 800; color: #000; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* KONTEN UTAMA - AREA PUTIH */
+        .content-area {
+            flex: 1; padding: 40px 25px; position: relative;
+            display: flex; flex-direction: column; align-items: center; z-index: 1;
+            overflow: hidden;
+        }
+
+        /* WATERMARK BESAR DI AREA PUTIH */
+        .bg-watermark {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 100%; height: 100%; 
+            background-image: url('logo.png'); 
+            background-size: contain; background-repeat: no-repeat; background-position: center;
+            opacity: 0.15; filter: blur(5px); z-index: 0; pointer-events: none;
+        }
+
+        /* KARTU ULASAN */
+        .review-card {
+            background-color: var(--oranye-muda); width: 100%; border-radius: 15px;
+            padding: 25px; margin-bottom: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            position: relative; z-index: 1; 
+        }
+        
+        .review-card h2 { font-size: 16px; font-weight: 700; color: #000; margin-bottom: 15px; }
+        .review-card p { font-size: 14px; font-weight: 400; color: #333; line-height: 1.6; }
+        .rating-stars { margin-bottom: 10px; color: #FBAF3B; font-size: 16px; letter-spacing: 2px;}
+
+        /* CSS WADAH MEDIA FOTO/VIDEO - VERSI PROPORSIONAL (NATURAL) */
+       .media-container {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column; /* Berderet rapi ke bawah kalau fotonya lebih dari 1 */
+            align-items: center; /* Biar posisinya pas di tengah */
+            gap: 15px;
+            width: 100%;
+        }
+        
+       .media-container img, .media-container video {
+            max-width: 100%; /* Biar lebarnya nggak pernah luber keluar dari kotak putih */
+            max-height: 400px; /* Biar kalau ada pelanggan ngirim foto yang super panjang, maksimal tingginya ditahan segini aja */
+            width: auto; /* Biar nyesuain ukuran aslinya */
+            height: auto; /* Biar proporsional aslinya (nggak melar/gepeng) */
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* TOMBOL AKSI */
+        .btn {
+            width: 100%; padding: 14px; border-radius: 25px; font-size: 15px; font-weight: 700;
+            cursor: pointer; border: none; transition: all 0.3s ease; margin-bottom: 12px;
+            position: relative; z-index: 1; 
+        }
+        .btn-delete { background-color: var(--merah-tombol); color: white; box-shadow: 0 6px 15px rgba(239, 62, 54, 0.3); }
+        .btn-delete:hover { background-color: #d62d26; transform: translateY(-2px); }
+        
+        .btn-back { background-color: #4B5563; color: white; box-shadow: 0 6px 15px rgba(75, 85, 99, 0.2); }
+        .btn-back:hover { background-color: #374151; transform: translateY(-2px); }
+
+        /* FOOTER LENGKUNG BAWAH */
+        .bottom-shape {
+            background-color: var(--oranye-tua); height: 80px; width: 100%;
+            border-top-left-radius: 50% 40px; border-top-right-radius: 50% 40px;
+            margin-top: auto; margin-bottom: -1px; position: relative; z-index: 2;
+        }
+
+        .footer {
+            background-color: var(--abu-footer); padding: 20px 25px;
+            display: flex; justify-content: space-between; align-items: flex-start;
+            font-size: 9px; color: var(--text-dark); position: relative; z-index: 2;
+        }
+        .footer-col b { font-size: 11px; font-weight: 800; display: block; margin-bottom: 5px; }
+        .social-icons { display: flex; gap: 8px; margin-top: 5px; }
+        .icon { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--text-dark); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header-wavy">
+        <h1>DETAIL PESAN & KESAN</h1>
+    </div>
+
+    <div class="content-area">
+        <div class="bg-watermark"></div> 
+        
+        <div class="review-card">
+            <h2 id="namaPengguna">Memuat data...</h2>
+            <div class="rating-stars" id="bintangRating"></div>
+            <p id="teksUlasan">Mohon tunggu sebentar...</p>
+            
+            <div id="wadahMedia" class="media-container"></div>
+            
+            <p id="tanggalUlasan" style="font-size: 10px; color: #666; margin-top: 15px; font-weight: 600;"></p>
+        </div>
+
+        <button id="tombolHapus" class="btn btn-delete" onclick="hapusUlasan()" style="display: none;">Hapus Ulasan</button>
+        <button class="btn btn-back" onclick="window.history.back()">Kembali</button>
+    </div>
+
+    <div class="bottom-shape"></div>
+    <div class="footer">
+        <div style="display: flex; align-items: center; gap: 10px; width: 30%;">
+            <div style="width: 30px; height: 30px; background: url('logo.png') no-repeat center; background-size: contain;"></div>
+            <b style="font-size: 8px;">UD. SUMBER REJEKI</b>
+        </div>
+        <div class="footer-col" style="width: 30%;">
+            <b>Quick Links</b>
+            <span style="line-height: 1.5; display: block;">HOME<br>ABOUT US<br>PRODUCT<br>MITRA</span>
+        </div>
+        <div class="footer-col" style="width: 40%;">
+            <b>Informasi Lebih Lanjut</b>
+            <span>Silahkan ikuti media sosial kami</span>
+            <div class="social-icons">
+                <div class="icon">▶</div><div class="icon">💬</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const ulasanId = urlParams.get('id');
+    const rolePengguna = urlParams.get('role'); // Nangkap kode 'role' dari URL
+
+    async function muatDetail() {
+        if (!ulasanId) {
+            document.getElementById('namaPengguna').innerText = "Error";
+            document.getElementById('teksUlasan').innerText = "ID Ulasan tidak ditemukan di URL.";
+            return;
+        }
+
+        try {
+            const response = await fetch(`ambil_detail.php?id=${ulasanId}`);
+            const data = await response.json();
+
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            // Render Teks & Info
+            document.getElementById('namaPengguna').innerText = data.username;
+            document.getElementById('teksUlasan').innerText = data.teks;
+            document.getElementById('tanggalUlasan').innerText = "Dikirim pada: " + data.tanggal;
+            
+            // Render Bintang
+            let starsHTML = '';
+            let rating = parseInt(data.rating) || 5;
+            for(let i=1; i<=5; i++) {
+                starsHTML += (i <= rating) ? '★' : '☆';
+            }
+            document.getElementById('bintangRating').innerHTML = starsHTML;
+
+            // Render Media (Foto/Video)
+            const wadahMedia = document.getElementById('wadahMedia');
+            wadahMedia.innerHTML = ''; 
+
+            if (data.media && data.media.trim() !== '' && data.media !== '[]') {
+                try {
+                    const mediaItems = JSON.parse(data.media);
+                    
+                    mediaItems.forEach(item => {
+                        if (item.type === 'image') {
+                            const imgElement = document.createElement('img');
+                            imgElement.src = item.src;
+                            imgElement.alt = "Bukti Foto Ulasan";
+                            wadahMedia.appendChild(imgElement);
+                        } else if (item.type === 'video') {
+                            const videoElement = document.createElement('video');
+                            videoElement.src = item.src;
+                            videoElement.controls = true; 
+                            wadahMedia.appendChild(videoElement);
+                        }
+                    });
+                } catch (e) {
+                    console.error("Gagal membaca file media dari database:", e);
+                }
+            }
+
+        } catch (error) {
+            console.error("Gagal memuat:", error);
+            document.getElementById('teksUlasan').innerText = "Gagal terhubung ke database.";
+        }
+    }
+
+    async function hapusUlasan() {
+        const yakin = confirm("Apakah Anda yakin ingin menghapus ulasan dari " + document.getElementById('namaPengguna').innerText + "?\n\nData yang dihapus tidak bisa dikembalikan!");
+        
+        if (yakin) {
+            try {
+                const response = await fetch('hapus_ulasan.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `id=${ulasanId}`
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    alert("Ulasan berhasil dihapus!");
+                    window.history.back(); 
+                } else {
+                    alert("Gagal menghapus: " + result.pesan);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Gagal menghubungi server untuk menghapus data.");
+            }
+        }
+    }
+
+    // Logika buat nampilin tombol Hapus kalau dia Admin
+    window.onload = () => {
+        if (rolePengguna === 'admin') {
+            document.getElementById('tombolHapus').style.display = 'block';
+        }
+        muatDetail(); // Jalanin fungsi muat data seperti biasa
+    };
+</script>
+
+</body>
+</html>

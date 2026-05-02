@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesan & Kesan - UD Sumber Rejeki</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- PENGATURAN WARNA & FILE --- */
+        :root {
+            --bg-body: #FAF0E6; 
+            --bg-app: #ffffff;
+            --logo-url: url('itik.png'); 
+            --watermark-url: url('itik.png'); 
+            --oranye-muda: #FDE8C4;
+            --oranye-tua: #e7992c;
+            --oranye-deep: #8B4513;
+            --merah-tombol: #EF3E36;
+            --abu-footer: #D1D5DB;
+            --text-dark: #1F2937;
+            --text-muted: #4B5563;
+        }
+
+        * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
+
+        body { background-color: var(--bg-body); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px 10px; }
+
+        /* CONTAINER UTAMA */
+        .page-container {
+            width: 100%; max-width: 1200px; background: var(--bg-app); min-height: 95vh;
+            border-radius: 30px; overflow: hidden; display: flex; flex-direction: column;
+            position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.06); border: 1px solid rgba(247, 181, 86, 0.2);
+        }
+
+        .bg-shape-bottom { position: absolute; bottom: 80px; left: 0; width: 100%; height: 850px; background-color: var(--oranye-muda); clip-path: ellipse(60% 350px at 50% 100%); z-index: 0; pointer-events: none; }
+        .watermark-bg { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); width: 80%; height: 60%; background-image: url(logo.png); background-repeat: no-repeat; background-position: center; background-size: contain; opacity: 0.10; z-index: 0; pointer-events: none; }
+        .navbar, .content-header, .review-list, .pagination, .input-section, .footer { position: relative; z-index: 1; }
+
+        /* NAVBAR & HEADER */
+        .navbar { padding: 25px 30px 10px; display: flex; justify-content: space-between; align-items: center; background: transparent; }
+        .logo-placeholder { width: 100px; height: 35px; background-image: url(logo.png); background-size: contain; background-position: left center; background-repeat: no-repeat; }
+        .nav-links { font-size: 9px; font-weight: 800; color: var(--text-dark); word-spacing: 5px; letter-spacing: 0.5px; }
+        .btn-login { background: #f3f4f6; padding: 8px 18px; border-radius: 12px; font-size: 11px; font-weight: 800; color: var(--text-dark); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; border: 1px solid transparent; }
+        .btn-login:hover { background: var(--oranye-tua); color: white; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(247, 181, 86, 0.4); }
+        .content-header { text-align: center; padding: 25px 0 20px; }
+        .content-header h1 { font-size: 24px; font-weight: 800; color: var(--text-dark); margin: 0; letter-spacing: 1px; position: relative; display: inline-block; }
+        .content-header h1::after { content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); width: 40px; height: 4px; background: var(--text-dark); border-radius: 2px; }
+
+        /* REVIEW LIST & CARDS */
+        .review-list { flex: 1; padding: 10px 35px 0; display: flex; flex-direction: column; gap: 18px; }
+        .card-review { background: rgba(253, 219, 150, 0.623); backdrop-filter: blur(10px); border-radius: 20px; overflow: hidden; transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid rgba(255, 255, 255, 0.6); }
+        .card-review:hover { transform: translateY(-4px) scale(1.005); box-shadow: 0 12px 24px rgba(255, 199, 120, 0.15); background: rgba(247, 214, 157, 0.9); }
+        .card-header { padding: 18px 22px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255, 179, 72, 0.5); }
+        .user-info { display: flex; flex-direction: column; gap: 4px; }
+        .user-name { font-size: 16px; font-weight: 800; color: var(--text-dark); }
+        .star-display { color: #e79406; font-size: 14px; letter-spacing: 2px; }
+        .review-time { font-size: 11px; font-weight: 700; color: #936c36; opacity: 0.8; background: rgba(255,255,255,0.5); padding: 4px 10px; border-radius: 10px; align-self: flex-start;}
+
+        .card-body { padding: 15px 22px 20px; display: none; font-size: 14px; color: #374151; line-height: 1.5; animation: fadeInBody 0.4s ease forwards; }
+         
+        /* TAMPILAN MEDIA DI DALAM KARTU */
+        .media-content { margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .media-wrapper { position: relative; width: 80px; height: 80px; cursor: pointer; border-radius: 10px; overflow: hidden; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: all 0.3s ease; }
+        .media-wrapper:hover { transform: scale(1.05); box-shadow: 0 8px 15px rgba(247, 181, 86, 0.3); z-index: 2; }
+        .media-wrapper img, .media-wrapper video { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .video-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.5); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; pointer-events: none; }
+        
+        /* TOMBOL LIHAT DETAIL */
+        .btn-detail { background: transparent; text-align: center; padding: 12px; font-size: 13px; font-weight: 800; color: var(--oranye-deep); cursor: pointer; border: none; width: 100%; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-detail:hover { background: rgba(247, 181, 86, 0.1); color: #7A3A00; }
+        .btn-detail:active, .btn-detail:focus { outline: none; }
+
+        /* PAGINATION */
+        .pagination { display: flex; justify-content: center; gap: 8px; padding: 25px 0 15px; }
+        .page-btn { background: #fff; border: 1px solid #e5e7eb; width: 36px; height: 36px; border-radius: 12px; font-weight: 800; color: #4B5563; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        .page-btn.active { background: var(--oranye-tua); color: #fff; border-color: var(--oranye-tua); transform: translateY(-3px); box-shadow: 0 6px 12px rgba(247, 181, 86, 0.3); }
+        .page-btn:hover:not(.active) { background: #f3f4f6; }
+
+        /* INPUT AREA & RATING BINTANG */
+        .input-section { padding: 25px 35px 30px; background: transparent; }
+        .input-rating-box { margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .input-rating-box span { font-size: 14px; font-weight: 700; color: var(--text-dark); }
+        .stars-input { display: flex; gap: 5px; font-size: 24px; cursor: pointer; color: #D1D5DB; }
+        .stars-input .star { transition: color 0.2s; }
+        .stars-input .star.active { color: #F59E0B; }
+        .stars-input .star:hover ~ .star { color: #D1D5DB !important; }
+
+        textarea { width: 100%; border-radius: 20px; border: 2px solid rgba(247, 181, 86, 0.2); padding: 18px; margin-bottom: 15px; font-size: 14px; outline: none; transition: all 0.3s ease; resize: none; height: 90px; background: rgba(255, 255, 255, 0.8); font-weight: 500; color: var(--text-dark); backdrop-filter: blur(5px); }
+        textarea:focus { border-color: var(--oranye-tua); background: #fff; box-shadow: 0 8px 20px rgba(247, 181, 86, 0.15); transform: translateY(-2px); }
+
+        .action-btns { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; gap: 10px; flex-wrap: wrap;}
+        .btn-gallery { background: #fff; padding: 12px 18px; border-radius: 14px; font-size: 12px; font-weight: 800; color: var(--text-dark); cursor: pointer; border: 2px solid #e5e7eb; transition: 0.3s; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .btn-gallery:hover { border-color: var(--oranye-tua); background: var(--oranye-muda); transform: translateY(-2px); }
+        .btn-submit { background: var(--text-dark); border: none; padding: 12px 28px; border-radius: 14px; cursor: pointer; font-weight: 800; font-size: 13px; color: #fff; box-shadow: 0 6px 15px rgba(31, 41, 55, 0.2); transition: all 0.3s ease; letter-spacing: 1px; }
+        .btn-submit:hover { transform: translateY(-3px); background: #374151; box-shadow: 0 8px 20px rgba(31, 41, 55, 0.3); }
+        .btn-red { background: var(--merah-tombol); color: white; width: 100%; padding: 13px; border-radius: 20px; border: none; font-weight: 800; font-size: 15px; cursor: pointer; box-shadow: 0 8px 20px rgba(239, 62, 54, 0.2); transition: all 0.3s ease; letter-spacing: 1px; margin-bottom: 15px; }
+        .btn-red:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(239, 62, 54, 0.35); }
+
+        .footer { background: var(--abu-footer); padding: 25px 35px; text-align: center; font-size: 10px; color: var(--text-muted); margin-top: auto; }
+        .footer-grid { display: grid; grid-template-columns: 1fr 1fr; text-align: left; margin-bottom: 15px; gap: 20px; align-items: start;}
+        .footer-grid b { color: var(--text-dark); font-size: 12px; display: block; margin-bottom: 8px; font-weight: 800; text-transform: uppercase;}
+        .social-icons { display: flex; gap: 10px; margin-top: 5px;}
+        .icon-bulat { width: 30px; height: 30px; border-radius: 50%; background: var(--text-dark); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.3s;}
+
+        /* MODAL LIGHTBOX E-COMMERCE STYLE */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 9999; flex-direction: column; justify-content: center; align-items: center; animation: fadeInBody 0.3s ease; }
+        .modal-close { position: absolute; top: 20px; right: 30px; font-size: 40px; color: #fff; cursor: pointer; font-weight: 400; transition: 0.3s; z-index: 10000; }
+        .modal-close:hover { color: var(--oranye-tua); transform: scale(1.1); }
+        
+        .modal-gallery-area { display: flex; align-items: center; justify-content: center; width: 100%; max-width: 800px; position: relative; height: 60vh; margin-top: 20px;}
+        .modal-main-media { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; padding: 0 50px; }
+        .modal-main-media img, .modal-main-media video { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; width: 45px; height: 45px; border-radius: 50%; font-size: 20px; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
+        .nav-btn:hover { background: var(--oranye-tua); color: var(--text-dark); }
+        .nav-btn.prev { left: 10px; }
+        .nav-btn.next { right: 10px; }
+
+        .modal-thumbnails { display: flex; gap: 10px; margin-top: 30px; padding: 10px; max-width: 90%; overflow-x: auto; justify-content: center; }
+        .thumb-box { width: 60px; height: 60px; border-radius: 8px; border: 2px solid transparent; cursor: pointer; opacity: 0.5; transition: 0.3s; overflow: hidden; position: relative;}
+        .thumb-box img, .thumb-box video { width: 100%; height: 100%; object-fit: cover; }
+        .thumb-box.active { border-color: var(--oranye-tua); opacity: 1; transform: scale(1.1); }
+
+        @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInBody { 0% { opacity: 0; transform: scale(0.97); } 100% { opacity: 1; transform: scale(1); } }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-thumb { background: var(--oranye-tua); border-radius: 10px; border: 2px solid var(--bg-app);}
+    </style>
+</head>
+<body>
+
+<div class="page-container">
+    <div class="bg-shape-bottom"></div>
+    <div class="watermark-bg"></div>
+
+    <div class="navbar">
+        <div class="logo-placeholder"></div>
+        <div class="nav-links">HOME ABOUT US PRODUCT MITRA PESAN CONTACT US HISTORY</div>
+        <div class="btn-login">LOGIN</div>
+    </div>
+
+    <div class="content-header"><h1>PESAN & KESAN</h1></div>
+
+    <div class="review-list" id="reviewBox"></div>
+    <div class="pagination" id="paginationBox"></div>
+
+    <div class="input-section">
+        <div class="input-rating-box">
+            <span>Penilaian Anda:</span>
+            <div class="stars-input" id="starSelector">
+                <span class="star active" data-val="1">★</span>
+                <span class="star active" data-val="2">★</span>
+                <span class="star active" data-val="3">★</span>
+                <span class="star active" data-val="4">★</span>
+                <span class="star active" data-val="5">★</span>
+            </div>
+        </div>
+
+        <textarea id="reviewText" placeholder="Bagaimana pengalaman Anda? Tulis di sini..."></textarea>
+        
+        <div class="action-btns">
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <label class="btn-gallery">
+                    📷 Upload Media <input type="file" id="fileInput" accept="image/*,video/*" multiple hidden onchange="handleFile()">
+                </label>
+                <label style="font-size: 13px; font-weight: 800; color: var(--text-dark); cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" id="anonCheckbox" style="accent-color: var(--oranye-tua); width: 18px; height: 18px; cursor: pointer;"> Anonim
+                </label>
+            </div>
+            <button class="btn-submit" onclick="kirimReview()">Kirim</button>
+        </div>
+        <div id="fileInfo" style="font-size: 12px; margin-top: -15px; margin-bottom: 20px; color: #059669; font-weight: 800;"></div>
+
+        <button class="btn-red" onclick="window.history.back()">Kembali ke Halaman Sebelumnya</button>
+    </div>
+
+    <div class="footer">
+        <div class="footer-grid">
+            <div>
+                <b>Quick Links</b>
+                <span style="line-height: 1.6; display: block; font-size: 9px; letter-spacing: 0.5px;">HOME • ABOUT US • PRODUCT • MITRA • PESAN • CONTACT US • HISTORY</span>
+            </div>
+            <div>
+                <b>Media Sosial</b>
+                <div class="social-icons">
+                    <div class="icon-bulat">▶</div><div class="icon-bulat">💬</div>
+                </div>
+            </div>
+        </div>
+        <p style="font-weight: 700; margin-top: 15px; margin-bottom: 0;">© 2026 UD. SUMBER REJEKI. All rights reserved.</p>
+    </div>
+</div>
+
+<div class="modal-overlay" id="mediaModal">
+    <span class="modal-close" onclick="closeModal()">&times;</span>
+    
+    <div class="modal-thumbnails" id="modalThumbnails">
+        </div>
+
+    <div class="modal-gallery-area">
+        <button class="nav-btn prev" onclick="navigateMedia(-1)">&#10094;</button>
+        <div class="modal-main-media">
+            <img id="modalImg" style="display:none;">
+            <video id="modalVid" controls style="display:none;"></video>
+        </div>
+        <button class="nav-btn next" onclick="navigateMedia(1)">&#10095;</button>
+    </div>
+</div>
+
+<script>
+    const ITEMS_PER_PAGE = 5; 
+    let currentPage = 1;
+    let selectedFilesData = []; 
+    let currentRating = 5; 
+    
+    // Variabel baru untuk menyimpan data dari database
+    let allReviews = []; 
+
+    // --- LOGIKA RATING BINTANG ---
+    const stars = document.querySelectorAll('.stars-input .star');
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            currentRating = this.getAttribute('data-val');
+            updateStarsUI(currentRating);
+        });
+        star.addEventListener('mouseover', function() {
+            updateStarsUI(this.getAttribute('data-val'));
+        });
+        star.addEventListener('mouseout', function() {
+            updateStarsUI(currentRating);
+        });
+    });
+
+    function updateStarsUI(rating) {
+        stars.forEach(s => {
+            if (s.getAttribute('data-val') <= rating) {
+                s.classList.add('active');
+            } else {
+                s.classList.remove('active');
+            }
+        });
+    }
+
+    function getStarsHTML(rating) {
+        let html = '';
+        for(let i=1; i<=5; i++) {
+            html += i <= rating ? '★' : '☆';
+        }
+        return html;
+    }
+
+    let currentModalMediaList = [];
+    let currentModalIndex = 0;
+
+    // --- AMBIL DATA DARI DATABASE (PENGGANTI LOCALSTORAGE) ---
+    async function fetchReviews() {
+        try {
+            // Memanggil kurir ambil_ulasan.php
+            const response = await fetch('ambil_ulasan.php');
+            allReviews = await response.json();
+            displayReviews(); // Tampilkan setelah data didapat
+        } catch (error) {
+            console.error("Gagal mengambil data:", error);
+            document.getElementById('reviewBox').innerHTML = `<p style="text-align:center; color:red;">Gagal memuat ulasan dari database.</p>`;
+        }
+    }
+
+    // Membuka modal dan merender thumbnail + gambar utama
+    function openLightbox(reviewIndex, mediaIndex) {
+        const data = allReviews; 
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        const actualIndex = startIndex + reviewIndex;
+        
+        const review = data[actualIndex];
+        currentModalMediaList = review.mediaList || (review.media ? [{type: review.mType, src: review.media}] : []);
+        
+        if (currentModalMediaList.length === 0) return;
+
+        currentModalIndex = mediaIndex;
+        document.getElementById('mediaModal').style.display = 'flex';
+        
+        renderModalThumbnails();
+        showModalMedia(currentModalIndex);
+    }
+
+    function renderModalThumbnails() {
+        const thumbContainer = document.getElementById('modalThumbnails');
+        thumbContainer.innerHTML = '';
+        
+        currentModalMediaList.forEach((media, index) => {
+            const isVideo = media.type === 'video';
+            const icon = isVideo ? `<div class="video-icon">▶</div>` : '';
+            const tag = isVideo ? `<video src="${media.src}#t=0.1" muted></video>` : `<img src="${media.src}">`;
+            
+            thumbContainer.innerHTML += `
+                <div class="thumb-box" id="thumb-${index}" onclick="showModalMedia(${index})">
+                    ${tag}
+                    ${icon}
+                </div>
+            `;
+        });
+    }
+
+    function showModalMedia(index) {
+        currentModalIndex = index;
+        const media = currentModalMediaList[index];
+        const img = document.getElementById('modalImg');
+        const vid = document.getElementById('modalVid');
+
+        document.querySelectorAll('.thumb-box').forEach(t => t.classList.remove('active'));
+        if(document.getElementById(`thumb-${index}`)) {
+            document.getElementById(`thumb-${index}`).classList.add('active');
+        }
+
+        if (media.type === 'image') {
+            img.src = media.src; img.style.display = 'block';
+            vid.style.display = 'none'; vid.pause();
+        } else {
+            vid.src = media.src; vid.style.display = 'block';
+            img.style.display = 'none'; vid.play();
+        }
+    }
+
+    function navigateMedia(step) {
+        let newIndex = currentModalIndex + step;
+        if (newIndex < 0) newIndex = currentModalMediaList.length - 1;
+        if (newIndex >= currentModalMediaList.length) newIndex = 0;
+        showModalMedia(newIndex);
+    }
+
+    function closeModal() {
+        document.getElementById('mediaModal').style.display = 'none';
+        document.getElementById('modalVid').pause();
+    }
+
+    // --- LOGIKA UPLOAD MULTI-FILE ---
+    async function handleFile() {
+        const fileInput = document.getElementById('fileInput');
+        const files = Array.from(fileInput.files);
+        if (files.length === 0) return;
+
+        let videoCount = 0;
+        let validFiles = [];
+
+        for (let file of files) {
+            const isVideo = file.type.startsWith('video/');
+            const isImage = file.type.startsWith('image/');
+            const fileSizeMB = file.size / (1024 * 1024);
+
+           if (isVideo) {
+                videoCount++;
+                if (videoCount > 1) {
+                    alert("Gagal menambahkan: Batas maksimal 1 video per ulasan.");
+                    continue; 
+                }
+                if (fileSizeMB > 15) {
+                    alert("Ukuran video melebihi batas. Maksimal ukuran file adalah 15MB.");
+                    continue;
+                }
+                const isValidDuration = await checkVideoDuration(file);
+                if (!isValidDuration) {
+                    alert("Durasi video terlalu panjang. Maksimal durasi adalah 50 detik.");
+                    continue;
+                }
+                validFiles.push(file);
+            } else if (isImage) {
+                if (fileSizeMB > 5) {
+                    alert(`Ukuran foto ${file.name} melebihi batas (Maks. 5MB).`);
+                    continue;
+                }
+                validFiles.push(file);
+            }
+        }
+
+        selectedFilesData = [];
+        for (let file of validFiles) {
+            const base64 = await readFileAsBase64(file);
+            selectedFilesData.push({
+                type: file.type.startsWith('video/') ? 'video' : 'image',
+                src: base64
+            });
+        }
+        
+        if (selectedFilesData.length > 0) {
+            document.getElementById('fileInfo').innerText = `✅ ${selectedFilesData.length} media siap dikirim.`;
+        } else {
+            document.getElementById('fileInfo').innerText = "";
+        }
+        fileInput.value = ''; 
+    }
+
+    function checkVideoDuration(file) {
+        return new Promise((resolve) => {
+            const video = document.createElement('video');
+            video.preload = 'metadata';
+            video.onloadedmetadata = function() {
+                window.URL.revokeObjectURL(video.src);
+                resolve(video.duration <= 50);
+            }
+            video.src = URL.createObjectURL(file);
+        });
+    }
+
+    function readFileAsBase64(file) {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // --- LOGIKA TAMPILAN REVIEW ---
+    function displayReviews() {
+        const data = allReviews; 
+        const box = document.getElementById('reviewBox');
+        box.innerHTML = '';
+
+        if(data.length === 0) {
+            box.innerHTML = `<p style="text-align:center; color:#9ca3af; font-size:14px; font-weight:600; margin-top:30px;">Belum ada ulasan. Jadilah yang pertama! ✨</p>`;
+            document.getElementById('paginationBox').innerHTML = '';
+            return;
+        }
+
+        const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE);
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        const endIndex = startIndex + ITEMS_PER_PAGE;
+        const currentData = data.slice(startIndex, endIndex);
+
+        currentData.forEach((item, indexReview) => {
+            let mediaArray = item.mediaList || [];
+            
+            let mediaHtml = '';
+            if (mediaArray.length > 0) {
+                mediaHtml += `<div class="media-content">`;
+                mediaArray.forEach((m, indexMedia) => {
+                    const isVideo = m.type === 'video';
+                    const icon = isVideo ? `<div class="video-icon">▶</div>` : '';
+                    const tag = isVideo ? `<video src="${m.src}#t=0.1" muted></video>` : `<img src="${m.src}">`;
+                    
+                    mediaHtml += `
+                        <div class="media-wrapper" onclick="openLightbox(${indexReview}, ${indexMedia})">
+                            ${tag}
+                            ${icon}
+                        </div>
+                    `;
+                });
+                mediaHtml += `</div>`;
+            }
+
+            const bodyId = 'body-' + startIndex + indexReview;
+            const ratingStars = getStarsHTML(item.rating || 5);
+
+            box.innerHTML += `
+                <div class="card-review" style="animation: slideUpFade 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards; animation-delay: ${indexReview * 0.1}s; opacity: 0;">
+                    <div class="card-header">
+                        <div class="user-info">
+                            <span class="user-name">${item.name}</span>
+                            <span class="star-display">${ratingStars}</span>
+                        </div>
+                        <span class="review-time">${item.date}</span>
+                    </div>
+                    <div class="card-body" id="${bodyId}" style="display:block;">
+                        ${item.text.replace(/\n/g, '<br>')}
+                        ${mediaHtml}
+                    </div>
+                    <button class="btn-detail" onclick="window.location.href='DetailPesan&Kesan.html?id=' + item.id">
+                        Lihat Detail ➔
+                    </button>
+                </div>
+            `;
+        });
+
+        renderPagination(totalPages);
+    }
+
+    function renderPagination(totalPages) {
+        const pBox = document.getElementById('paginationBox');
+        pBox.innerHTML = '';
+        if (totalPages <= 1) return; 
+        for(let i = 1; i <= totalPages; i++) {
+            pBox.innerHTML += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+        }
+    }
+
+    function goToPage(pageNumber) {
+        currentPage = pageNumber;
+        displayReviews();
+        document.querySelector('.content-header').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // --- KIRIM DATA KE DATABASE ---
+    async function kirimReview() {
+        const textInput = document.getElementById('reviewText');
+        const isAnon = document.getElementById('anonCheckbox').checked;
+        
+        if (!textInput.value.trim() && selectedFilesData.length === 0) {
+            return alert("Pesan atau foto tidak boleh kosong!");
+        }
+
+        const userAsli = "Pelanggan"; 
+        let userTampil = isAnon ? userAsli[0] + "****" + userAsli.slice(-1) : userAsli;
+
+        const newData = {
+            name: userTampil,
+            text: textInput.value,
+            rating: currentRating,
+            mediaList: selectedFilesData
+        };
+
+        const btnSubmit = document.querySelector('.btn-submit');
+        btnSubmit.innerHTML = "Mengirim...";
+        btnSubmit.disabled = true;
+
+        try {
+            const response = await fetch('simpan_ulasan.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newData)
+            });
+            
+            const result = await response.json();
+            
+            if(result.status === 'success') {
+                textInput.value = '';
+                selectedFilesData = [];
+                document.getElementById('fileInput').value = '';
+                document.getElementById('fileInfo').innerText = "";
+                document.getElementById('anonCheckbox').checked = false;
+                currentRating = 5;
+                updateStarsUI(5);
+                
+                currentPage = 1;
+                await fetchReviews();
+            } else {
+                alert("Error: " + result.pesan);
+            }
+        } catch (error) {
+            console.error("Gagal ngirim:", error);
+            alert("Koneksi bermasalah bro, coba lagi!");
+        } finally {
+            btnSubmit.innerHTML = "Kirim";
+            btnSubmit.disabled = false;
+        }
+    }
+
+    window.onload = fetchReviews;
+</script>
+
+</body>
+</html>
