@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Chat - UD. Sumber Rejeki</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #f0f2f5;
+            --bg-chat: #efeae2; 
+            --text-primary: #111b21;
+            --text-secondary: #667781;
+            --oranye-tua: #FBAF3B;
+            --oranye-muda: #FDE8C4;
+            --chat-me: #FBAF3B;
+            --chat-them: #ffffff;
+            --border-color: #d1d7db;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        /* Dibuat bener-bener full screen */
+        body { 
+            background-color: var(--bg-main); 
+            color: var(--text-primary); 
+            width: 100vw;
+            height: 100vh; 
+            display: flex; 
+            overflow: hidden; 
+        }
+
+        /* Panel obrolan ngisi 100% layar tanpa dibatasi */
+        .conversation-panel { 
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-chat); 
+            display: flex; 
+            flex-direction: column; 
+            position: relative;
+        }
+
+        .chat-header { 
+            background: #ffffff; 
+            padding: 10px 25px; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            height: 65px; 
+            border-bottom: 1px solid var(--border-color); 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+
+        .avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--oranye-muda); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        
+        /* Area Chat dengan background WA style biar nggak kosong melompong di monitor gede */
+        .chat-box { 
+            flex: 1; 
+            padding: 30px 8%; /* Padding kiri-kanan pakai % biar proporsional di layar lebar */
+            overflow-y: auto; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png'); 
+            background-color: var(--bg-chat); 
+            background-blend-mode: multiply;
+        }
+        
+        /* Balon chat dilimit max 65% biar nggak memanjang jelek dari ujung ke ujung layar */
+        .msg { max-width: 65%; padding: 10px 14px; border-radius: 10px; font-size: 15px; position: relative; word-wrap: break-word; box-shadow: 0 1px 1px rgba(0,0,0,0.1); line-height: 1.5;}
+        .msg.them { background: var(--chat-them); align-self: flex-start; border-top-left-radius: 0;}
+        .msg.me { background: var(--chat-me); align-self: flex-end; border-top-right-radius: 0;}
+        
+        .msg .time { font-size: 11px; color: rgba(0,0,0,0.5); float: right; margin-top: 5px; margin-left: 15px; font-weight: 500;}
+
+        .msg img, .msg video { max-width: 100%; border-radius: 8px; margin-bottom: 5px; display: block; }
+
+        .input-area { background: var(--bg-main); padding: 15px 8%; display: flex; align-items: center; gap: 15px; }
+        .btn-attach { background: none; border: none; font-size: 24px; color: var(--text-secondary); cursor: pointer; transition: 0.2s; display: flex; align-items: center;}
+        .btn-attach:hover { color: var(--oranye-tua); transform: scale(1.1); }
+        #fileMedia { display: none; } 
+
+        .input-area input[type="text"] { flex: 1; background: #ffffff; border: none; padding: 14px 20px; border-radius: 8px; color: var(--text-primary); outline: none; font-size: 15px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);}
+        
+        .send-btn { 
+            background: none; border: none; width: 45px; height: 45px; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 22px; transition: 0.2s; color: var(--text-secondary);
+        }
+        .send-btn:hover { color: var(--oranye-tua); }
+
+        /* RESPONSIVE MODE (HP) */
+        @media (max-width: 768px) {
+            .chat-box { padding: 20px 15px; } /* Padding dikecilin kalau di HP */
+            .input-area { padding: 12px 15px; }
+            .msg { max-width: 85%; } /* Balon chat bisa lebih lebar kalau di HP biar lega */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="conversation-panel" id="chatPanel">
+        <div class="chat-header">
+            <div class="avatar">🎧</div>
+            <div style="flex:1">
+                <h3 style="font-size: 16px; color: var(--text-primary); font-weight: 700;">Admin UD. Sumber Rejeki</h3>
+                <p style="font-size: 13px; color: #25D366; font-weight: 600;">🟢 Online</p>
+            </div>
+        </div>
+
+        <div class="chat-box" id="kotakChat">
+            <div class="msg them">Halo! Ada yang bisa kami bantu seputar produk atau pesanan di UD. Sumber Rejeki?<span class="time">10:00</span></div>
+        </div>
+
+        <div class="input-area">
+            <button class="btn-attach" onclick="document.getElementById('fileMedia').click()">📎</button>
+            <input type="file" id="fileMedia" accept="image/*, video/*" onchange="kirimMedia(event)">
+            
+            <input type="text" id="inputBalas" placeholder="Ketik pesan Anda di sini..." onkeypress="tekanEnter(event)">
+            <button class="send-btn" onclick="kirimChat()">➤</button>
+        </div>
+    </div>
+
+    <script>
+        const kotakChat = document.getElementById('kotakChat');
+        const inputBalas = document.getElementById('inputBalas');
+
+        function buatBalonChatPelanggan(kontenHtml) {
+            const skrg = new Date();
+            const jam = skrg.getHours().toString().padStart(2, '0');
+            const menit = skrg.getMinutes().toString().padStart(2, '0');
+
+            const htmlPesan = `
+                <div class="msg me">
+                    ${kontenHtml}
+                    <span class="time">${jam}:${menit}</span>
+                </div>
+            `;
+            kotakChat.insertAdjacentHTML('beforeend', htmlPesan);
+            kotakChat.scrollTop = kotakChat.scrollHeight;
+        }
+
+        function kirimChat() {
+            if(inputBalas.value.trim() === "") return;
+            buatBalonChatPelanggan(inputBalas.value);
+            inputBalas.value = "";
+        }
+
+        function kirimMedia(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const urlFile = e.target.result;
+                let kontenMedia = '';
+
+                if (file.type.startsWith('image/')) {
+                    kontenMedia = `<img src="${urlFile}" alt="Foto">`;
+                } else if (file.type.startsWith('video/')) {
+                    kontenMedia = `<video src="${urlFile}" controls></video>`;
+                }
+                buatBalonChatPelanggan(kontenMedia);
+            }
+            reader.readAsDataURL(file);
+            event.target.value = ""; 
+        }
+
+        function tekanEnter(event) {
+            if (event.key === "Enter") kirimChat();
+        }
+    </script>
+</body>
+</html>
