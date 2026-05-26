@@ -1,0 +1,69 @@
+:root {
+    --primary-color: #ff9f1c; /* Orange cerah */
+    --secondary-color: #ffbf69; /* Orange muda */
+    --accent-color: #2ec4b6; /* Teal untuk aksen positif */
+    --light-bg: #fffcf2;
+}
+
+body {
+    background-color: var(--light-bg);
+    font-family: 'Inter', sans-serif;
+    color: #333;
+}
+
+.bg-header {
+    background-color: var(--primary-color);
+}
+
+.bg-soft-yellow {
+    background-color: #fff9e6;
+}
+
+/* Tombol Keranjang */
+.btn-add-cart {
+    background-color: var(--accent-color);
+    transition: all 0.3s ease;
+}
+
+.btn-add-cart:hover {
+    background-color: #24a89d;
+    transform: translateY(-2px);
+}
+
+/* Tombol Checkout */
+.btn-checkout {
+    background: linear-gradient(135deg, #ff9f1c 0%, #ff8c00 100%);
+    border: none;
+    font-size: 1.1rem;
+}
+
+.btn-checkout:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+}
+
+/* Custom Checkbox/Radio */
+.btn-outline-warning {
+    color: #ff8c00;
+    border-color: #ffb347;
+}
+
+.btn-check:checked + .btn-outline-warning {
+    background-color: #ff8c00;
+    border-color: #ff8c00;
+    color: #fff;
+}
+
+/* Animasi sederhana pada kartu produk */
+.product-preview {
+    transition: transform 0.3s ease;
+}
+
+.product-preview:hover {
+    transform: scale(1.02);
+}
+
+.nav-link.active {
+    font-weight: bold;
+    border-bottom: 2px solid var(--primary-color);
+}
